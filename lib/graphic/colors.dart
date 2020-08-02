@@ -1,14 +1,15 @@
 import 'dart:ui';
 
+import 'package:flutter/widgets.dart';
+
+
 class Colors {
   static final WHITE = Colors(0xffffffff);
   static final BLACK = Colors(0xff000000);
   static final BLOCK_GRAY = Colors(0xff303030);
   static final RED = Color(0xffd20101);
 
-
   Color color;
-  static const RED = Color(0xffd20101);
 
   Colors(int val) {
     this.color = Color(val);

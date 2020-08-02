@@ -123,7 +123,7 @@ class TheGame extends BaseGame with TapDetector {
     center = Position(viewport.width / 2, viewport.height / 2);
 
     background =
-        Rectangle(viewport.height, viewport.width, Colors.paint(Colors.BLACK));
+        Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
     playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
         Colors.WHITE.paint);
   }

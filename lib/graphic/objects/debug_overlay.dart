@@ -7,7 +7,7 @@ import 'package:thoughts/graphic/colors.dart';
 
 class DebugOverlay {
   final TextConfig font =
-      TextConfig(fontSize: 12, fontFamily: 'Arial', color: Colors.WHITE);
+      TextConfig(fontSize: 12, fontFamily: 'Arial', color: Colors.WHITE.color);
   final List<Function> lines = [];
 
   void render(Canvas canvas) {

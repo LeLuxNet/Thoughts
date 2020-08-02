@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/game.dart';
@@ -40,24 +39,24 @@ class TheGame extends BaseGame with TapDetector {
     resize(screenDimensions);
 
     debugOverlay.lines.addAll([
-          () {
+      () {
         var frames = fps();
         if (frames.isFinite) {
           return frames.round().toString();
         }
         return "N/A";
       },
-          () =>
-      player.loc.x.toStringAsFixed(2) +
+      () =>
+          player.loc.x.toStringAsFixed(2) +
           " / " +
           player.loc.y.toStringAsFixed(2),
-          () =>
-      player.velocity.x.toStringAsFixed(2) +
+      () =>
+          player.velocity.x.toStringAsFixed(2) +
           " / " +
           player.velocity.y.toStringAsFixed(2),
-          () => player.jumped.toString(),
-          () => player.grounded().toString(),
-          () => player.gravitySide == GravitySide.top ? "top" : "bottom"
+      () => player.jumped.toString(),
+      () => player.grounded().toString(),
+      () => player.gravitySide == GravitySide.top ? "top" : "bottom"
     ]);
   }
 
@@ -99,16 +98,6 @@ class TheGame extends BaseGame with TapDetector {
     // Player
     playerShape.renderCentered(c, center);
 
-    c.save();
-    c.translate(viewport.width / 2, viewport.height / 2);
-    c.rotate(pi);
-    for (var h = 1; h <= player.hearts; h++) {
-      Triangle
-          .eq(blockSize / 2, Colors.paint(Colors.RED))
-          .render(c, Position(h * blockSize / 2 - viewport.width / 2, (viewport.height / 2) - (blockSize / 1) * 5));
-    }
-    c.restore();
-
     // DebugOverlay
     debugOverlay.render(c);
   }
@@ -136,7 +125,7 @@ class TheGame extends BaseGame with TapDetector {
     background =
         Rectangle(viewport.height, viewport.width, Colors.paint(Colors.BLACK));
     playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
-        Colors.paint(Colors.WHITE));
+        Colors.WHITE.paint);
   }
 
   @override
@@ -147,12 +136,23 @@ class TheGame extends BaseGame with TapDetector {
       toggleGravity();
     }
     player.jumped += 1;
-    player.velocity.x += WALK_VELOCITY;
+
+    var percent = details.localPosition.dx / viewport.width;
+    if (percent >= 0.5) {
+      player.velocity.x += WALK_VELOCITY;
+    } else {
+      player.velocity.x -= WALK_VELOCITY;
+    }
   }
 
   @override
   void onTapUp(TapUpDetails details) {
-    player.velocity.x -= WALK_VELOCITY;
+    player.velocity.x = 0;
+  }
+
+  @override
+  void onTapCancel() {
+    player.velocity.x = 0;
   }
 
   void toggleGravity() {

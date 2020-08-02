@@ -1,20 +1,23 @@
 import 'dart:ui';
 
-import 'package:flame/components/mixins/tapable.dart';
 import 'package:flame/game.dart';
+import 'package:flame/gestures.dart';
 import 'package:flame/position.dart';
+import 'package:flutter/gestures.dart';
 import 'package:thoughts/graphic/colors.dart';
-import 'package:thoughts/graphic/objects/background.dart';
 import 'package:thoughts/graphic/objects/debug_overlay.dart';
 import 'package:thoughts/graphic/shapes/rectangle.dart';
-import 'package:thoughts/interface/buttons/walk_button.dart';
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/player.dart';
 import 'package:thoughts/world/location.dart';
 import 'package:thoughts/world/world.dart';
 
-class TheGame extends BaseGame with HasTapableComponents {
+import 'graphic/colors.dart';
+import 'graphic/shapes/rectangle.dart';
+
+class TheGame extends BaseGame with TapDetector {
   static const BLOCK_PILE = 6;
+  static const WALK_VELOCITY = 10;
 
   World world;
   Player player;
@@ -23,26 +26,14 @@ class TheGame extends BaseGame with HasTapableComponents {
   double blockSize;
   Position center;
 
-  Background background;
+  Rectangle background;
   Rectangle playerShape;
 
-  WalkButton leftButton;
-  WalkButton rightButton;
-
   DebugOverlay debugOverlay = DebugOverlay();
-  int frames;
 
   TheGame(screenDimensions) {
     world = World();
     player = Player(Location(5, 1.5), GravitySide.bottom);
-
-    background = Background(this);
-    add(background);
-
-    leftButton = WalkButton(player, -1);
-    rightButton = WalkButton(player, 1);
-    add(leftButton);
-    add(rightButton);
 
     resize(screenDimensions);
 
@@ -71,7 +62,7 @@ class TheGame extends BaseGame with HasTapableComponents {
   @override
   void render(Canvas c) {
     // Background
-    background.render(c);
+    background.render(c, Position(0, 0));
 
     // World
     int minX = player.loc.x.toInt();
@@ -106,9 +97,6 @@ class TheGame extends BaseGame with HasTapableComponents {
     // Player
     playerShape.renderCentered(c, center);
 
-    leftButton.render(c);
-    rightButton.render(c);
-
     // DebugOverlay
     debugOverlay.render(c);
   }
@@ -123,12 +111,6 @@ class TheGame extends BaseGame with HasTapableComponents {
 
   @override
   void update(double t) {
-    if (t == 0) {
-      frames = 0;
-    } else {
-      frames = 1 ~/ t;
-    }
-
     world.update(t);
   }
 
@@ -139,19 +121,25 @@ class TheGame extends BaseGame with HasTapableComponents {
     blockSize = viewport.height / BLOCK_PILE;
     center = Position(viewport.width / 2, viewport.height / 2);
 
+    background = Rectangle(viewport.height, viewport.width, Colors.paint(Colors.BLACK));
     playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
         Colors.paint(Colors.WHITE));
+  }
 
-    leftButton.height = blockSize;
-    leftButton.width = blockSize;
-    rightButton.height = blockSize;
-    rightButton.width = blockSize;
+  @override
+  void onTapDown(TapDownDetails details) {
+    if (player.jumped == 0) {
+      player.velocity.y -= 5.0 * player.gravitySide.forceMult;
+    } else if (player.jumped == 1) {
+      toggleGravity();
+    }
+    player.jumped += 1;
+    player.velocity.x += WALK_VELOCITY;
+  }
 
-    leftButton.y = viewport.height - 2 * blockSize;
-    rightButton.y = leftButton.y;
-
-    leftButton.x = blockSize;
-    rightButton.x = 2.5 * blockSize;
+  @override
+  void onTapUp(TapUpDetails details) {
+    player.velocity.x -= WALK_VELOCITY;
   }
 
   void toggleGravity() {

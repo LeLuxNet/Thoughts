@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/game.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:thoughts/graphic/colors.dart';
 import 'package:thoughts/graphic/objects/debug_overlay.dart';
 import 'package:thoughts/graphic/shapes/rectangle.dart';
+import 'package:thoughts/graphic/shapes/triangle.dart';
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/player.dart';
 import 'package:thoughts/world/location.dart';
@@ -38,24 +40,24 @@ class TheGame extends BaseGame with TapDetector {
     resize(screenDimensions);
 
     debugOverlay.lines.addAll([
-      () {
+          () {
         var frames = fps();
         if (frames.isFinite) {
           return frames.round().toString();
         }
         return "N/A";
       },
-      () =>
-          player.loc.x.toStringAsFixed(2) +
+          () =>
+      player.loc.x.toStringAsFixed(2) +
           " / " +
           player.loc.y.toStringAsFixed(2),
-      () =>
-          player.velocity.x.toStringAsFixed(2) +
+          () =>
+      player.velocity.x.toStringAsFixed(2) +
           " / " +
           player.velocity.y.toStringAsFixed(2),
-      () => player.jumped.toString(),
-      () => player.grounded().toString(),
-      () => player.gravitySide == GravitySide.top ? "top" : "bottom"
+          () => player.jumped.toString(),
+          () => player.grounded().toString(),
+          () => player.gravitySide == GravitySide.top ? "top" : "bottom"
     ]);
   }
 
@@ -97,6 +99,16 @@ class TheGame extends BaseGame with TapDetector {
     // Player
     playerShape.renderCentered(c, center);
 
+    c.save();
+    c.translate(viewport.width / 2, viewport.height / 2);
+    c.rotate(pi);
+    for (var h = 1; h <= player.hearts; h++) {
+      Triangle
+          .eq(blockSize / 2, Colors.paint(Colors.RED))
+          .render(c, Position(h * blockSize / 2 - viewport.width / 2, (viewport.height / 2) - (blockSize / 1) * 5));
+    }
+    c.restore();
+
     // DebugOverlay
     debugOverlay.render(c);
   }
@@ -121,7 +133,8 @@ class TheGame extends BaseGame with TapDetector {
     blockSize = viewport.height / BLOCK_PILE;
     center = Position(viewport.width / 2, viewport.height / 2);
 
-    background = Rectangle(viewport.height, viewport.width, Colors.paint(Colors.BLACK));
+    background =
+        Rectangle(viewport.height, viewport.width, Colors.paint(Colors.BLACK));
     playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
         Colors.paint(Colors.WHITE));
   }

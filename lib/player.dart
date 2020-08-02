@@ -5,6 +5,8 @@ class Player extends PhysicsObject {
 
   int jumped = 0;
 
+  int hearts = 3;
+
   Player(Location loc, GravitySide gravitySide) : super(2, 1, loc, gravitySide);
 
   @override

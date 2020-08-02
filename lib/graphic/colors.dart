@@ -1,11 +1,25 @@
 import 'dart:ui';
 
-class Colors {
-  static const WHITE = Color(0xffffffff);
-  static const BLACK = Color(0xff000000);
-  static const BLOCK_GRAY = Color(0xff191919);
+import 'package:flutter/cupertino.dart';
 
-  static Paint paint(Color col) {
-    return Paint()..color = col;
+class Colors {
+  static final WHITE = Colors(0xffffffff);
+  static final BLACK = Colors(0xff000000);
+  static final BLOCK_GRAY = Colors(0xff303030);
+
+  Color color;
+
+  Colors(int val) {
+    this.color = Color(val);
+  }
+
+  Paint get paint {
+    return Paint()..color = color;
+  }
+
+  Colors sat(double sat) {
+    var hsv = HSVColor.fromColor(color);
+    hsv.withSaturation(hsv.saturation * sat);
+    return Colors(hsv.toColor().value);
   }
 }

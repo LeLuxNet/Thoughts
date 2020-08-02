@@ -121,9 +121,9 @@ class TheGame extends BaseGame with TapDetector {
     blockSize = viewport.height / BLOCK_PILE;
     center = Position(viewport.width / 2, viewport.height / 2);
 
-    background = Rectangle(viewport.height, viewport.width, Colors.paint(Colors.BLACK));
+    background = Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
     playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
-        Colors.paint(Colors.WHITE));
+        Colors.WHITE.paint);
   }
 
   @override
@@ -134,12 +134,23 @@ class TheGame extends BaseGame with TapDetector {
       toggleGravity();
     }
     player.jumped += 1;
-    player.velocity.x += WALK_VELOCITY;
+
+    var percent = details.localPosition.dx / viewport.width;
+    if (percent >= 0.5) {
+      player.velocity.x += WALK_VELOCITY;
+    } else {
+      player.velocity.x -= WALK_VELOCITY;
+    }
   }
 
   @override
   void onTapUp(TapUpDetails details) {
-    player.velocity.x -= WALK_VELOCITY;
+    player.velocity.x = 0;
+  }
+
+  @override
+  void onTapCancel() {
+    player.velocity.x = 0;
   }
 
   void toggleGravity() {

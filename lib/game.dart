@@ -56,6 +56,7 @@ class TheGame extends BaseGame with TapDetector {
           player.velocity.x.toStringAsFixed(2) +
           " / " +
           player.velocity.y.toStringAsFixed(2),
+      () => player.touchingX.join(", "),
       () => player.jumped.toString(),
       () => player.grounded().toString(),
       () => player.gravitySide == GravitySide.top ? "top" : "bottom",
@@ -153,9 +154,11 @@ class TheGame extends BaseGame with TapDetector {
   }
 
   void run(bool toRight) {
-    if (toRight) { // Right
+    if (toRight) {
+      // Right
       player.velocity.x += WALK_VELOCITY;
-    } else { // Left
+    } else {
+      // Left
       player.velocity.x -= WALK_VELOCITY;
     }
   }

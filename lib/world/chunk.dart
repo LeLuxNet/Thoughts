@@ -23,8 +23,12 @@ class Chunk {
   Block _genBlock(int x, int y) {
     if (y % 10 == 0) {
       return Block(x, y);
-    } else if (y % 10 == 1 && x % 5 == 0) {
-      return Obstacle(x, y, false);
+    } else if (y % 10 == 1) {
+      if (x % 5 == 0) {
+        return Obstacle(x, y, false);
+      } else if (x % 3 == 0) {
+        return Block(x, y);
+      }
     }
     return null;
   }

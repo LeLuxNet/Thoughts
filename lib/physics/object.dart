@@ -44,6 +44,14 @@ class PhysicsObject {
     return (frontY + gravitySide.forceMult * 0.5).round();
   }
 
+  List<int> get touchingX {
+    List<int> touching = [];
+    for (var i = loc.x.floor(); i <= loc.x.ceil(); i++) {
+      touching.add(i);
+    }
+    return touching;
+  }
+
   void update(double t) {
     _move(t);
 
@@ -73,12 +81,14 @@ class PhysicsObject {
     for (int cord = next;
         delta > 0 ? cord <= to : cord >= to;
         cord += direction) {
-      var block = World.instance.getBlock(loc.blockX, cord);
-      if (block != null) {
-        block.collide(this);
-        if (block.solid) {
-          collided(block, Axis.y);
-          return cord - direction * (height / 2 + 0.5);
+      for (final x in touchingX) {
+        var block = World.instance.getBlock(x, cord);
+        if (block != null) {
+          block.collide(this);
+          if (block.solid) {
+            collided(block, Axis.y);
+            return cord - direction * (height / 2 + 0.5);
+          }
         }
       }
     }

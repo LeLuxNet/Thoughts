@@ -42,24 +42,26 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
     resize(screenDimensions);
 
     debugOverlay.lines.addAll([
-          () {
+      () {
         var frames = fps();
         if (frames.isFinite) {
           return frames.round().toString();
         }
         return "N/A";
       },
-          () =>
-      player.loc.x.toStringAsFixed(2) +
+      () =>
+          player.loc.x.toStringAsFixed(2) +
           " / " +
           player.loc.y.toStringAsFixed(2),
-          () =>
-      player.velocity.x.toStringAsFixed(2) +
+      () =>
+          player.velocity.x.toStringAsFixed(2) +
           " / " +
           player.velocity.y.toStringAsFixed(2),
-          () => player.jumped.toString(),
-          () => player.grounded().toString(),
-          () => player.gravitySide == GravitySide.top ? "top" : "bottom"
+      () => player.touchingX.join(", "),
+      () => player.jumped.toString(),
+      () => player.grounded().toString(),
+      () => player.gravitySide == GravitySide.top ? "top" : "bottom",
+      () => player.hearts.toString()
     ]);
   }
 
@@ -130,12 +132,10 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
     blockSize = viewport.height / BLOCK_PILE;
     center = Position(viewport.width / 2, viewport.height / 2);
 
-    background =
-        Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
+    background = Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
     playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
         Colors.WHITE.paint);
-    heart = Triangle
-        .eq(blockSize / 2, Colors.RED.paint, invert: true);
+    heart = Triangle.eq(blockSize / 2, Colors.RED.paint, invert: true);
   }
 
   @override
@@ -155,9 +155,11 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   }
 
   void run(bool toRight) {
-    if (toRight) { // Right
+    if (toRight) {
+      // Right
       player.velocity.x += WALK_VELOCITY;
-    } else { // Left
+    } else {
+      // Left
       player.velocity.x -= WALK_VELOCITY;
     }
   }

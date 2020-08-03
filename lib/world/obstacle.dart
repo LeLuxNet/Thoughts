@@ -17,9 +17,11 @@ class Obstacle extends Block {
   }
 
   @override
-  void collide(PhysicsObject object) {
+  bool collide(PhysicsObject object) {
     if (object is Player) {
-      object.hearts--;
+      object.damage();
+      return true;
     }
+    return false;
   }
 }

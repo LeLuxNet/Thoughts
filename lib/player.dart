@@ -8,6 +8,7 @@ class Player extends PhysicsObject {
   bool running = false;
 
   int hearts = 3;
+  Location lastCheckpoint;
 
   Player(Location loc, GravitySide gravitySide) : super(2, 1, loc, gravitySide);
 
@@ -16,6 +17,7 @@ class Player extends PhysicsObject {
     super.update(t);
     if (grounded()) {
       jumped = 0;
+      lastCheckpoint = loc.clone();
     }
   }
 
@@ -51,5 +53,10 @@ class Player extends PhysicsObject {
   void toggleGravity() {
     gravitySide =
         gravitySide == GravitySide.top ? GravitySide.bottom : GravitySide.top;
+  }
+
+  void damage() {
+    hearts--;
+    loc = lastCheckpoint;
   }
 }

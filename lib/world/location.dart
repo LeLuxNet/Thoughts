@@ -11,4 +11,8 @@ class Location {
   int get blockY {
     return y.floor();
   }
+
+  Location clone() {
+    return Location(x, y);
+  }
 }

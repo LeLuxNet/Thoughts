@@ -21,7 +21,6 @@ import 'graphic/shapes/rectangle.dart';
 
 class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   static const BLOCK_PILE = 6;
-  static const WALK_VELOCITY = 10;
 
   World world;
   Player player;
@@ -59,6 +58,10 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
           player.velocity.x.toStringAsFixed(2) +
           " / " +
           player.velocity.y.toStringAsFixed(2),
+      () =>
+          player.lastCheckpoint.x.toStringAsFixed(2) +
+          " / " +
+          player.lastCheckpoint.y.toStringAsFixed(2),
       () => player.touchingX.join(", "),
       () => player.jumped.toString(),
       () => player.grounded().toString(),
@@ -143,52 +146,32 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
 
   @override
   void onTapDown(TapDownDetails details) {
-    var percent = details.localPosition.dx / viewport.width;
-    jump();
-    run(percent >= 0.5);
-  }
+    player.jump();
 
-  void jump() {
-    if (player.jumped == 0) {
-      player.velocity.y -= 5.0 * player.gravitySide.forceMult;
-    } else if (player.jumped == 1) {
-      toggleGravity();
-    }
-    player.jumped += 1;
-  }
-
-  void run(bool toRight) {
-    if (toRight) {
-      // Right
-      player.velocity.x += WALK_VELOCITY;
-    } else {
-      // Left
-      player.velocity.x -= WALK_VELOCITY;
-    }
-  }
-
-  @override
-  void onKeyEvent(e) {
-    if (e is RawKeyDownEvent && (e.character == 'd' || e.character == 'a')) {
-      jump();
-      run(e.character == 'd');
-    }
+    final percent = details.localPosition.dx / viewport.width;
+    player.run(percent >= 0.5);
   }
 
   @override
   void onTapUp(TapUpDetails details) {
-    player.velocity.x = 0;
+    player.brake();
   }
 
   @override
   void onTapCancel() {
-    player.velocity.x = 0;
+    player.brake();
   }
 
-  void toggleGravity() {
-    player.gravitySide = player.gravitySide == GravitySide.top
-        ? GravitySide.bottom
-        : GravitySide.top;
+  @override
+  void onKeyEvent(e) {
+    if (e.data.keyLabel == 'd' || e.data.keyLabel == 'a') {
+      if (e is RawKeyDownEvent) {
+        player.jump();
+        player.run(e.data.keyLabel == 'd');
+      } else if (e is RawKeyUpEvent) {
+        player.brake();
+      }
+    }
   }
 
   @override

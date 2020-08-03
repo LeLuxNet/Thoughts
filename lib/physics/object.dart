@@ -79,12 +79,14 @@ class PhysicsObject {
     int next = delta > 0 ? nextD.floor() : nextD.ceil();
     var to = next + delta;
     for (int cord = next;
-        delta > 0 ? cord <= to : cord >= to;
-        cord += direction) {
+    delta > 0 ? cord <= to : cord >= to;
+    cord += direction) {
       for (final x in touchingX) {
         var block = World.instance.getBlock(x, cord);
         if (block != null) {
-          block.collide(this);
+          if (block.collide(this)) {
+            return loc.y;
+          }
           if (block.solid) {
             collided(block, Axis.y);
             return cord - direction * (height / 2 + 0.5);
@@ -104,7 +106,15 @@ class PhysicsObject {
   }
 
   bool grounded() {
-    return nextY == frontY + gravitySide.forceMult * 0.5 &&
-        World.instance.getBlock(loc.blockX, nextY) != null;
+    if (nextY != frontY + gravitySide.forceMult * 0.5) {
+      return false;
+    }
+    for (var x in touchingX) {
+      var block = World.instance.getBlock(x, nextY);
+      if (block != null && block.solid) {
+        return true;
+      }
+    }
+    return false;
   }
 }

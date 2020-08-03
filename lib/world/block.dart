@@ -17,5 +17,7 @@ class Block {
     return Rectangle.square(size, Colors.BLOCK_GRAY.paint);
   }
 
-  void collide(PhysicsObject object) {}
+  bool collide(PhysicsObject object) {
+    return false;
+  }
 }

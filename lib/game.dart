@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
+import 'package:flame/keyboard.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +18,7 @@ import 'package:thoughts/world/world.dart';
 import 'graphic/colors.dart';
 import 'graphic/shapes/rectangle.dart';
 
-class TheGame extends BaseGame with TapDetector {
+class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   static const BLOCK_PILE = 6;
   static const WALK_VELOCITY = 10;
 
@@ -165,10 +166,7 @@ class TheGame extends BaseGame with TapDetector {
   void onKeyEvent(e) {
     if (e is RawKeyDownEvent && (e.character == 'd' || e.character == 'a')) {
       jump();
-      bool toRight = e.character == 'd' ? true : false;
-      run(toRight);
-    } else {
-      print('e is not a RawKeyDownEvent');
+      run(e.character == 'd');
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:thoughts/graphic/colors.dart';
 import 'package:thoughts/graphic/objects/debug_overlay.dart';
 import 'package:thoughts/graphic/shapes/rectangle.dart';
@@ -138,18 +139,36 @@ class TheGame extends BaseGame with TapDetector {
 
   @override
   void onTapDown(TapDownDetails details) {
+    var percent = details.localPosition.dx / viewport.width;
+    jump();
+    run(percent >= 0.5);
+  }
+
+  void jump() {
     if (player.jumped == 0) {
       player.velocity.y -= 5.0 * player.gravitySide.forceMult;
     } else if (player.jumped == 1) {
       toggleGravity();
     }
     player.jumped += 1;
+  }
 
-    var percent = details.localPosition.dx / viewport.width;
-    if (percent >= 0.5) {
+  void run(bool toRight) {
+    if (toRight) { // Right
       player.velocity.x += WALK_VELOCITY;
-    } else {
+    } else { // Left
       player.velocity.x -= WALK_VELOCITY;
+    }
+  }
+
+  @override
+  void onKeyEvent(e) {
+    if (e is RawKeyDownEvent && (e.character == 'd' || e.character == 'a')) {
+      jump();
+      bool toRight = e.character == 'd' ? true : false;
+      run(toRight);
+    } else {
+      print('e is not a RawKeyDownEvent');
     }
   }
 

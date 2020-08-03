@@ -16,6 +16,7 @@ import 'package:thoughts/world/location.dart';
 import 'package:thoughts/world/world.dart';
 
 import 'graphic/colors.dart';
+import 'graphic/shapes/circle.dart';
 import 'graphic/shapes/rectangle.dart';
 
 class TheGame extends BaseGame with TapDetector, KeyboardEvents {
@@ -30,7 +31,8 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   Position center;
 
   Rectangle background;
-  Rectangle playerShape;
+  Circle playerCircle;
+  Triangle playerTriangle;
   Triangle heart;
 
   DebugOverlay debugOverlay = DebugOverlay();
@@ -101,7 +103,8 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
     }
 
     // Player
-    playerShape.renderCentered(c, center);
+    playerCircle.renderCentered(c, Position(center.x, center.y - blockSize / 2));
+    playerTriangle.renderCentered(c, Position(center.x, center.y + blockSize / 2));
 
     // GameOverlay
     for (var h = 1; h <= player.hearts; h++) {
@@ -133,8 +136,8 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
     center = Position(viewport.width / 2, viewport.height / 2);
 
     background = Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
-    playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
-        Colors.WHITE.paint);
+    playerCircle = Circle(blockSize, Colors.WHITE.paint);
+    playerTriangle = Triangle(blockSize, blockSize, Colors.WHITE.paint);
     heart = Triangle.eq(blockSize / 2, Colors.RED.paint, invert: true);
   }
 

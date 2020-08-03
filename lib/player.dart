@@ -2,7 +2,6 @@ import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/world/location.dart';
 
 class Player extends PhysicsObject {
-
   int jumped = 0;
 
   int hearts = 3;

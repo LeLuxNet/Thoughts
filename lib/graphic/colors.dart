@@ -7,7 +7,7 @@ class Colors {
   static final WHITE = Colors(0xffffffff);
   static final BLACK = Colors(0xff000000);
   static final BLOCK_GRAY = Colors(0xff303030);
-  static final RED = Color(0xffd20101);
+  static final RED = Colors(0xffd20101);
 
   Color color;
 

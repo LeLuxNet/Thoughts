@@ -8,15 +8,23 @@ class Triangle extends Renderable {
   Paint paint;
   Path _path;
 
-  Triangle(double height, double width, this.paint) : super(height, width) {
+  Triangle(double height, double width, this.paint, {bool invert: false})
+      : super(height, width) {
     _path = Path();
-    _path.moveTo(width / 2, 0);
-    _path.lineTo(0, height);
-    _path.lineTo(width, height);
+    if (invert) {
+      _path.moveTo(0, 0);
+      _path.lineTo(width, 0);
+      _path.lineTo(width / 2, height);
+    } else {
+      _path.moveTo(width / 2, 0);
+      _path.lineTo(0, height);
+      _path.lineTo(width, height);
+    }
     _path.close();
   }
-  
-  Triangle.eq(length, paint): this(sqrt(3) / 2 * length, length, paint);
+
+  Triangle.eq(length, paint, {bool invert: false})
+      : this(sqrt(3) / 2 * length, length, paint, invert: invert);
 
   @override
   render(Canvas c, Position pos) {

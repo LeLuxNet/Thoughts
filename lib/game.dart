@@ -29,6 +29,7 @@ class TheGame extends BaseGame with TapDetector {
 
   Rectangle background;
   Rectangle playerShape;
+  Triangle heart;
 
   DebugOverlay debugOverlay = DebugOverlay();
 
@@ -39,24 +40,24 @@ class TheGame extends BaseGame with TapDetector {
     resize(screenDimensions);
 
     debugOverlay.lines.addAll([
-      () {
+          () {
         var frames = fps();
         if (frames.isFinite) {
           return frames.round().toString();
         }
         return "N/A";
       },
-      () =>
-          player.loc.x.toStringAsFixed(2) +
+          () =>
+      player.loc.x.toStringAsFixed(2) +
           " / " +
           player.loc.y.toStringAsFixed(2),
-      () =>
-          player.velocity.x.toStringAsFixed(2) +
+          () =>
+      player.velocity.x.toStringAsFixed(2) +
           " / " +
           player.velocity.y.toStringAsFixed(2),
-      () => player.jumped.toString(),
-      () => player.grounded().toString(),
-      () => player.gravitySide == GravitySide.top ? "top" : "bottom"
+          () => player.jumped.toString(),
+          () => player.grounded().toString(),
+          () => player.gravitySide == GravitySide.top ? "top" : "bottom"
     ]);
   }
 
@@ -89,7 +90,7 @@ class TheGame extends BaseGame with TapDetector {
         var block = world.getBlock(x, y);
         if (block != null) {
           block
-              .draw(blockSize)
+              .draw(blockSize + 1)
               .renderCentered(c, Position(_canvasX(x), _canvasY(y)));
         }
       }
@@ -97,6 +98,11 @@ class TheGame extends BaseGame with TapDetector {
 
     // Player
     playerShape.renderCentered(c, center);
+
+    // GameOverlay
+    for (var h = 1; h <= player.hearts; h++) {
+      heart.render(c, Position(viewport.width - h * heart.width, 0));
+    }
 
     // DebugOverlay
     debugOverlay.render(c);
@@ -126,6 +132,8 @@ class TheGame extends BaseGame with TapDetector {
         Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
     playerShape = Rectangle(player.height * blockSize, player.width * blockSize,
         Colors.WHITE.paint);
+    heart = Triangle
+        .eq(blockSize / 2, Colors.RED.paint, invert: true);
   }
 
   @override

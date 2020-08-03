@@ -9,6 +9,6 @@ class Block {
   Block(this.x, this.y);
 
   Renderable draw(double size) {
-    return Rectangle.square(size + 1, Colors.BLOCK_GRAY.paint);
+    return Rectangle.square(size, Colors.BLOCK_GRAY.paint);
   }
 }

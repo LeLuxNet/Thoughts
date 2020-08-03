@@ -31,7 +31,6 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
 
   Rectangle background;
   Circle playerCircle;
-  Triangle playerTriangle;
   Triangle heart;
 
   DebugOverlay debugOverlay = DebugOverlay();
@@ -106,8 +105,8 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
     }
 
     // Player
-    playerCircle.renderCentered(c, Position(center.x, center.y - blockSize / 2));
-    playerTriangle.renderCentered(c, Position(center.x, center.y + blockSize / 2));
+    playerCircle.renderCentered(c, Position(center.x, center.y + player.gravitySide.forceMult * blockSize / 2));
+    Triangle(blockSize, blockSize, Colors.WHITE.paint, invert: player.gravitySide == GravitySide.top).renderCentered(c, Position(center.x, center.y - player.gravitySide.forceMult * blockSize / 2));
 
     // GameOverlay
     for (var h = 1; h <= player.hearts; h++) {
@@ -140,7 +139,6 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
 
     background = Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
     playerCircle = Circle(blockSize, Colors.WHITE.paint);
-    playerTriangle = Triangle(blockSize, blockSize, Colors.WHITE.paint);
     heart = Triangle.eq(blockSize / 2, Colors.RED.paint, invert: true);
   }
 

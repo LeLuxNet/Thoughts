@@ -1,4 +1,5 @@
 import 'package:thoughts/world/block.dart';
+import 'package:thoughts/world/obstacle.dart';
 
 class Chunk {
   static const BLOCKS_PER_CHUNK = 25;
@@ -20,8 +21,10 @@ class Chunk {
   }
 
   Block _genBlock(int x, int y) {
-    if (y % 10 == 0 || (y % 10 == 1 && x % 2 == 0)) {
+    if (y % 10 == 0) {
       return Block(x, y);
+    } else if (y % 10 == 1 && x % 5 == 0) {
+      return Obstacle(x, y, false);
     }
     return null;
   }

@@ -75,8 +75,11 @@ class PhysicsObject {
         cord += direction) {
       var block = World.instance.getBlock(loc.blockX, cord);
       if (block != null) {
-        collided(block, Axis.y);
-        return cord - direction * (height / 2 + 0.5);
+        block.collide(this);
+        if (block.solid) {
+          collided(block, Axis.y);
+          return cord - direction * (height / 2 + 0.5);
+        }
       }
     }
     return loc.y + delta;

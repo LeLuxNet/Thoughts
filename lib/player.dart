@@ -10,7 +10,9 @@ class Player extends PhysicsObject {
   int hearts = 3;
   Location lastCheckpoint;
 
-  Player(Location loc, GravitySide gravitySide) : super(2, 1, loc, gravitySide);
+  Player(Location loc, GravitySide gravitySide) : super(2, 1, loc, gravitySide) {
+    lastCheckpoint = loc;
+  }
 
   @override
   void update(double t) {

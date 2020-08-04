@@ -15,22 +15,9 @@ class Chunk {
       var globalX = this.x * BLOCKS_PER_CHUNK + localX;
       for (var localY = 0; localY < BLOCKS_PER_CHUNK; localY++) {
         var globalY = this.y * BLOCKS_PER_CHUNK + localY;
-        blocks[localX].add(_genBlock(globalX, globalY));
+        blocks[localX].add(null);
       }
     }
-  }
-
-  Block _genBlock(int x, int y) {
-    if (y % 10 == 0) {
-      return Block(x, y);
-    } else if (y % 10 == 1) {
-      if (x % 5 == 0) {
-        return Obstacle(x, y, false);
-      } else if (x % 3 == 0) {
-        return Block(x, y);
-      }
-    }
-    return null;
   }
 
   Block getLocalBlock(int x, int y) {
@@ -38,8 +25,11 @@ class Chunk {
   }
 
   Block getGlobalBlock(int x, int y) {
-    x -= this.x * BLOCKS_PER_CHUNK;
-    y -= this.y * BLOCKS_PER_CHUNK;
-    return getLocalBlock(x, y);
+    return blocks[x - this.x * BLOCKS_PER_CHUNK][y - this.y * BLOCKS_PER_CHUNK];
+  }
+
+  void setGlobalBlock(int x, int y, Block block) {
+    blocks[x - this.x * BLOCKS_PER_CHUNK][y - this.y * BLOCKS_PER_CHUNK] =
+        block;
   }
 }

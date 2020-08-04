@@ -37,7 +37,7 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
 
   TheGame(screenDimensions) {
     world = World();
-    player = Player(Location(5, 1.5), GravitySide.bottom);
+    player = Player(Location(0, 2), GravitySide.bottom);
 
     resize(screenDimensions);
 

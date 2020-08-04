@@ -15,7 +15,7 @@ int main() {
     }
   }
   new File('../lib/world/map.dart').writeAsString(
-    'List<List<int>> map = ' + map.toString() + ';'
+    'List<List<int>> rawMap = ' + map.toString() + ';'
   );
   return 0;
 }

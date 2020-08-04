@@ -1,5 +1,7 @@
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/world/chunk.dart';
+import 'package:thoughts/world/map.dart';
+import 'package:thoughts/world/obstacle.dart';
 
 import 'block.dart';
 
@@ -15,16 +17,35 @@ class World {
   World() {
     _instance = this;
 
-    for (var x = 0; x < CHUNKS_X; x++) {
-      chunks.add([]);
-      for (var y = 0; y < CHUNKS_Y; y++) {
-        chunks[x].add(Chunk(x, y));
+    for (var y = 0; y < rawMap.length; y++) {
+      for (var x = 0; x < rawMap[y].length; x++) {
+        var chunkX = x ~/ Chunk.BLOCKS_PER_CHUNK;
+        while (chunks.length <= chunkX) {
+          chunks.add([]);
+        }
+        var chunkY = y ~/ Chunk.BLOCKS_PER_CHUNK;
+        while (chunks[chunkX].length <= chunkY) {
+          chunks[chunkX].add(Chunk(chunkX, chunkY));
+        }
+        var chunk = chunks[chunkX][chunkY];
+        chunk.setGlobalBlock(x, y, _fromId(x, y, rawMap[y][x]));
       }
     }
   }
 
   static World get instance {
     return _instance;
+  }
+
+  Block _fromId(int x, int y, int id) {
+    if (id == 1) {
+      return Block(x, y);
+    } else if (id == 2) {
+      return Obstacle(x, y, false);
+    } else if (id == 3) {
+      return Obstacle(x, y, true);
+    }
+    return null;
   }
 
   Block getBlock(int x, int y) {

@@ -58,9 +58,9 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
           " / " +
           player.velocity.y.toStringAsFixed(2),
       () =>
-          player.lastCheckpoint.x.toStringAsFixed(2) +
+          player.lastCheckpointLocation.x.toStringAsFixed(2) +
           " / " +
-          player.lastCheckpoint.y.toStringAsFixed(2),
+          player.lastCheckpointLocation.y.toStringAsFixed(2),
       () => player.touchingX.join(", "),
       () => player.jumped.toString(),
       () => player.grounded().toString(),

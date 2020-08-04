@@ -8,10 +8,12 @@ class Player extends PhysicsObject {
   bool running = false;
 
   int hearts = 3;
-  Location lastCheckpoint;
+  Location lastCheckpointLocation;
+  GravitySide lastCheckpointGravity;
 
   Player(Location loc, GravitySide gravitySide) : super(2, 1, loc, gravitySide) {
-    lastCheckpoint = loc;
+    lastCheckpointLocation = loc;
+    lastCheckpointGravity = gravitySide;
   }
 
   @override
@@ -19,7 +21,8 @@ class Player extends PhysicsObject {
     super.update(t);
     if (grounded()) {
       jumped = 0;
-      lastCheckpoint = loc.clone();
+      lastCheckpointLocation = loc.clone();
+      lastCheckpointGravity = gravitySide;
     }
   }
 
@@ -59,6 +62,7 @@ class Player extends PhysicsObject {
 
   void damage() {
     hearts--;
-    loc = lastCheckpoint;
+    loc = lastCheckpointLocation;
+    gravitySide = lastCheckpointGravity;
   }
 }

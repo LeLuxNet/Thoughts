@@ -1,0 +1,4 @@
+name: map
+
+dependencies:
+  image: ^2.1.14

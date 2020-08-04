@@ -22,6 +22,8 @@ int main() {
 
 int convertToMapValue(int value) {
   switch (value) {
+    case 0:
+      return 0;
     case 4278190080:
       return 1;
     case 4278190335:
@@ -29,6 +31,6 @@ int convertToMapValue(int value) {
     case 4294902015:
       return 3;
     default:
-      return 0;
+      throw('Unknown block value $value');
   }
 }

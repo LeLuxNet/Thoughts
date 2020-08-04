@@ -2,7 +2,7 @@ import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/world/location.dart';
 
 class Player extends PhysicsObject {
-  static const WALK_VELOCITY = 10;
+  static const WALK_VELOCITY = 5;
 
   int jumped = 0;
   bool running = false;

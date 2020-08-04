@@ -81,17 +81,22 @@ class PhysicsObject {
     for (int cord = next;
     delta > 0 ? cord <= to : cord >= to;
     cord += direction) {
-      for (final x in touchingX) {
+      Block unsolidBlock;
+      for (var x in touchingX) {
         var block = World.instance.getBlock(x, cord);
         if (block != null) {
-          if (block.collide(this)) {
-            return loc.y;
-          }
           if (block.solid) {
+            block.collide(this);
             collided(block, Axis.y);
             return cord - direction * (height / 2 + 0.5);
+          } else {
+            unsolidBlock = block;
           }
         }
+      }
+      if (unsolidBlock != null) {
+        unsolidBlock.collide(this);
+        return loc.y;
       }
     }
     return loc.y + delta;

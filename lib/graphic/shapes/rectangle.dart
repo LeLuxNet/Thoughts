@@ -1,14 +1,14 @@
 import 'dart:ui';
 
 import 'package:flame/position.dart';
-import 'package:thoughts/graphic/renderable.dart';
+import 'package:thoughts/graphic/colors.dart';
+import 'package:thoughts/graphic/shape.dart';
 
-class Rectangle extends Renderable {
-  Paint paint;
+class Rectangle extends Shape {
+  Rectangle(double height, double width, Colors paint)
+      : super(height, width, paint);
 
-  Rectangle(double height, double width, this.paint) : super(height, width);
-
-  Rectangle.square(double length, paint) : this(length, length, paint);
+  Rectangle.square(double length, Colors color) : this(length, length, color);
 
   @override
   render(Canvas c, Position pos) {

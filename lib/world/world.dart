@@ -49,14 +49,25 @@ class World {
   }
 
   Block getBlock(int x, int y) {
-    if (x < 0 || y < 0) {
+    var chunk = getChunk(x, y);
+    if (chunk == null) {
       return null;
     }
-    return getChunk(x, y).getGlobalBlock(x, y);
+    return chunk.getGlobalBlock(x, y);
   }
 
   Chunk getChunk(int x, int y) {
-    return chunks[x ~/ Chunk.BLOCKS_PER_CHUNK][y ~/ Chunk.BLOCKS_PER_CHUNK];
+    if (x < 0 || y < 0) {
+      return null;
+    }
+
+    var chunkX = x ~/ Chunk.BLOCKS_PER_CHUNK;
+    var chunkY = y ~/ Chunk.BLOCKS_PER_CHUNK;
+
+    if (chunks.length < chunkX && chunks[chunkX].length < chunkY) {
+      return null;
+    }
+    return chunks[chunkX][chunkY];
   }
 
   update(double t) {

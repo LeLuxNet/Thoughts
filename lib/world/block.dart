@@ -14,7 +14,7 @@ class Block {
   }
 
   Renderable draw(double size) {
-    return Rectangle.square(size, Colors.BLOCK_GRAY.paint);
+    return Rectangle.square(size, Colors.BLOCK_GRAY);
   }
 
   bool collide(PhysicsObject object) {

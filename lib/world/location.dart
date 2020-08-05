@@ -15,4 +15,9 @@ class Location {
   Location clone() {
     return Location(x, y);
   }
+
+  @override
+  String toString() {
+    return x.toStringAsFixed(2) + " / " + y.toStringAsFixed(2);
+  }
 }

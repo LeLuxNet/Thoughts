@@ -24,6 +24,8 @@ class PhysicsObject {
 
   static const GRAVITY = 10;
 
+  static const GROUND_FRICTION = 0.6;
+
   PhysicsObject(this.height, this.width, this.loc, this.gravitySide) {
     World.instance.physicsObjects.add(this);
   }
@@ -57,8 +59,12 @@ class PhysicsObject {
 
     Vector2 delta = Vector2(0, 0);
 
-    if (gravitySide != null && !grounded()) {
-      delta.y += GRAVITY * gravitySide.forceMult * t;
+    if (grounded()) {
+      velocity.x *= GROUND_FRICTION;
+    } else {
+      if (gravitySide != null) {
+        delta.y += GRAVITY * gravitySide.forceMult * t;
+      }
     }
 
     velocity.x += delta.x;
@@ -70,7 +76,6 @@ class PhysicsObject {
     var velY = velocity.y * t;
 
     loc.x += velX;
-
     loc.y = _collisionY(velY, velY > 0 ? 1 : -1);
   }
 
@@ -79,8 +84,8 @@ class PhysicsObject {
     int next = delta > 0 ? nextD.floor() : nextD.ceil();
     var to = next + delta;
     for (int cord = next;
-    delta > 0 ? cord <= to : cord >= to;
-    cord += direction) {
+        delta > 0 ? cord <= to : cord >= to;
+        cord += direction) {
       Block unsolidBlock;
       for (var x in touchingX) {
         var block = World.instance.getBlock(x, cord);

@@ -13,7 +13,7 @@ class DebugOverlay {
   void render(Canvas canvas) {
     for (var i = 0; i < lines.length; i++) {
       font.render(
-          canvas, lines[i](), Position(0, i.toDouble() * font.fontSize));
+          canvas, lines[i]().toString(), Position(0, i.toDouble() * font.fontSize));
     }
   }
 }

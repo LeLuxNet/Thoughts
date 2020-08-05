@@ -2,14 +2,14 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/position.dart';
-import 'package:thoughts/graphic/renderable.dart';
+import 'package:thoughts/graphic/colors.dart';
+import 'package:thoughts/graphic/shape.dart';
 
-class Triangle extends Renderable {
-  Paint paint;
+class Triangle extends Shape {
   Path _path;
 
-  Triangle(double height, double width, this.paint, {bool invert: false})
-      : super(height, width) {
+  Triangle(double height, double width, Colors color, {bool invert: false})
+      : super(height, width, color) {
     _path = Path();
     if (invert) {
       _path.moveTo(0, 0);
@@ -23,8 +23,8 @@ class Triangle extends Renderable {
     _path.close();
   }
 
-  Triangle.eq(length, paint, {bool invert: false})
-      : this(sqrt(3) / 2 * length, length, paint, invert: invert);
+  Triangle.eq(double length, Colors color, {bool invert: false})
+      : this(sqrt(3) / 2 * length, length, color, invert: invert);
 
   @override
   render(Canvas c, Position pos) {

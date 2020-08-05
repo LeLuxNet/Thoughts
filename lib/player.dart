@@ -1,17 +1,22 @@
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/world/location.dart';
 
+enum Direction { left, right }
+
 class Player extends PhysicsObject {
-  static const WALK_VELOCITY = 5;
+  static const double WALK_VELOCITY = 5;
 
   int jumped = 0;
-  bool running = false;
+  Direction running;
 
   int hearts = 3;
-  Location lastCheckpoint;
+  Location checkpointLoc;
+  GravitySide checkpointSide;
 
-  Player(Location loc, GravitySide gravitySide) : super(2, 1, loc, gravitySide) {
-    lastCheckpoint = loc;
+  Player(Location loc, GravitySide gravitySide)
+      : super(2, 1, loc, gravitySide) {
+    checkpointLoc = loc;
+    checkpointSide = gravitySide;
   }
 
   @override
@@ -19,12 +24,16 @@ class Player extends PhysicsObject {
     super.update(t);
     if (grounded()) {
       jumped = 0;
-      lastCheckpoint = loc.clone();
+      checkpointLoc = loc.clone();
+      checkpointSide = gravitySide;
+    }
+    if (running != null) {
+      velocity.x = running == Direction.right ? WALK_VELOCITY : -WALK_VELOCITY;
     }
   }
 
   void jump() {
-    if (running) {
+    if (running != null) {
       return;
     }
     if (jumped == 0) {
@@ -35,21 +44,15 @@ class Player extends PhysicsObject {
     jumped += 1;
   }
 
-  void run(bool toRight) {
-    if (running) {
+  void run(bool dir) {
+    if (running != null) {
       return;
     }
-    running = true;
-    if (toRight) {
-      velocity.x += WALK_VELOCITY;
-    } else {
-      velocity.x -= WALK_VELOCITY;
-    }
+    running = dir ? Direction.right : Direction.left;
   }
 
   void brake() {
-    running = false;
-    velocity.x = 0;
+    running = null;
   }
 
   void toggleGravity() {
@@ -59,6 +62,12 @@ class Player extends PhysicsObject {
 
   void damage() {
     hearts--;
-    loc = lastCheckpoint;
+    running = null;
+
+    velocity.x = 0;
+    velocity.y = 0;
+
+    loc = checkpointLoc;
+    gravitySide = checkpointSide;
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/game.dart';
@@ -20,7 +21,8 @@ import 'graphic/shapes/circle.dart';
 import 'graphic/shapes/rectangle.dart';
 
 class TheGame extends BaseGame with TapDetector, KeyboardEvents {
-  static const BLOCK_PILE = 6;
+  static const MAX_BLOCK_PILE = 6;
+  static const MAX_BLOCK_ROW = 12;
 
   World world;
   Player player;
@@ -37,7 +39,7 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
 
   TheGame(screenDimensions) {
     world = World();
-    player = Player(Location(0, 2), GravitySide.bottom);
+    player = Player(Location(1.5, 2), GravitySide.bottom);
 
     resize(screenDimensions);
 
@@ -45,27 +47,18 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
       () {
         var frames = fps();
         if (frames.isFinite) {
-          return frames.round().toString();
+          return frames.round();
         }
         return "N/A";
       },
-      () =>
-          player.loc.x.toStringAsFixed(2) +
-          " / " +
-          player.loc.y.toStringAsFixed(2),
-      () =>
-          player.velocity.x.toStringAsFixed(2) +
-          " / " +
-          player.velocity.y.toStringAsFixed(2),
-      () =>
-          player.lastCheckpoint.x.toStringAsFixed(2) +
-          " / " +
-          player.lastCheckpoint.y.toStringAsFixed(2),
+      () => player.loc,
+      () => player.velocity,
+      () => player.checkpointLoc,
       () => player.touchingX.join(", "),
-      () => player.jumped.toString(),
-      () => player.grounded().toString(),
+      () => player.jumped,
+      () => player.grounded(),
       () => player.gravitySide == GravitySide.top ? "top" : "bottom",
-      () => player.hearts.toString()
+      () => player.hearts
     ]);
   }
 
@@ -105,8 +98,11 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
     }
 
     // Player
-    playerCircle.renderCentered(c, Position(center.x, center.y + player.gravitySide.forceMult * blockSize / 2));
-    Triangle(blockSize, blockSize, Colors.WHITE.paint, invert: player.gravitySide == GravitySide.top).renderCentered(c, Position(center.x, center.y - player.gravitySide.forceMult * blockSize / 2));
+    var headOffset = player.gravitySide.forceMult * blockSize / 2;
+    playerCircle.renderCentered(c, Position(center.x, center.y + headOffset));
+    Triangle(blockSize, blockSize, Colors.WHITE,
+            invert: player.gravitySide == GravitySide.top)
+        .renderCentered(c, Position(center.x, center.y - headOffset));
 
     // GameOverlay
     for (var h = 1; h <= player.hearts; h++) {
@@ -134,12 +130,13 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   void resize(Size size) {
     super.resize(size);
     viewport = size;
-    blockSize = viewport.height / BLOCK_PILE;
+    blockSize =
+        max(viewport.width / MAX_BLOCK_ROW, viewport.height / MAX_BLOCK_PILE);
     center = Position(viewport.width / 2, viewport.height / 2);
 
-    background = Rectangle(viewport.height, viewport.width, Colors.BLACK.paint);
-    playerCircle = Circle(blockSize, Colors.WHITE.paint);
-    heart = Triangle.eq(blockSize / 2, Colors.RED.paint, invert: true);
+    background = Rectangle(viewport.height, viewport.width, Colors.BLACK);
+    playerCircle = Circle(blockSize, Colors.WHITE);
+    heart = Triangle.eq(blockSize / 2, Colors.RED, invert: true);
   }
 
   @override

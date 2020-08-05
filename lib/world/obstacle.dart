@@ -13,7 +13,7 @@ class Obstacle extends Block {
   }
 
   Renderable draw(double size) {
-    return Triangle(size, size, Colors.RED.paint, invert: this.invert);
+    return Triangle(size, size, Colors.RED, invert: this.invert);
   }
 
   @override

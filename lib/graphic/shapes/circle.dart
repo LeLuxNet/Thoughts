@@ -1,12 +1,11 @@
 import 'dart:ui';
 
 import 'package:flame/position.dart';
-import 'package:thoughts/graphic/renderable.dart';
+import 'package:thoughts/graphic/colors.dart';
+import 'package:thoughts/graphic/shape.dart';
 
-class Circle extends Renderable {
-  Paint paint;
-
-  Circle(double length, this.paint) : super(length, length);
+class Circle extends Shape {
+  Circle(double length, Colors color) : super(length, length, color);
 
   @override
   renderCentered(Canvas c, Position pos) {

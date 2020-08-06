@@ -59,7 +59,7 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
       () => player.checkpointLoc,
       () => player.touchingX.join(", ") + " / " + player.touchingY.join(", "),
       () => player.jumped,
-      () => player.grounded,
+      () => player.grounded(),
       () => player.gravitySide == GravitySide.top ? "top" : "bottom",
       () => player.hearts
     ]);

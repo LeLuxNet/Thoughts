@@ -1,7 +1,7 @@
 import 'package:thoughts/physics/vector2.dart';
 import 'package:thoughts/world/block/block.dart';
-import 'package:thoughts/world/location.dart';
 import 'package:thoughts/world/block/world.dart';
+import 'package:thoughts/world/location.dart';
 
 class GravitySide {
   static const top = GravitySide(1);
@@ -21,8 +21,6 @@ class PhysicsObject {
 
   double height;
   double width;
-
-  bool grounded = false;
 
   static const GRAVITY = 10;
 
@@ -83,7 +81,7 @@ class PhysicsObject {
 
     Vector2 delta = Vector2(0, 0);
 
-    if (grounded) {
+    if (grounded()) {
       velocity.x *= GROUND_FRICTION;
     } else {
       velocity.x *= AIR_FRICTION;
@@ -97,10 +95,6 @@ class PhysicsObject {
   }
 
   void _move(double t) {
-    if(velocity.y != 0) {
-      grounded = false;
-    }
-
     var oldLoc = loc;
 
     var velX = velocity.x * t;
@@ -144,9 +138,6 @@ class PhysicsObject {
         velY = 0;
         loc.y = oldY;
         velocity.y = 0;
-        if (gravitySide.forceMult == dirY) {
-          grounded = true;
-        }
       }
     }
   }
@@ -171,5 +162,21 @@ class PhysicsObject {
       }
     }
     return null;
+  }
+
+  bool grounded() {
+    if (gravitySide == GravitySide.bottom
+        ? nextY < frontY - 0.5 - MOVEMENT_STEP
+        : nextY > frontY + 0.5 + MOVEMENT_STEP) {
+      return false;
+    }
+
+    for (var x in touchingX) {
+      var block = World.instance.getBlock(x, nextY);
+      if (block != null && block.solid) {
+        return true;
+      }
+    }
+    return false;
   }
 }

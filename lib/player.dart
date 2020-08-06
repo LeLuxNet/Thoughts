@@ -32,7 +32,7 @@ class Player extends PhysicsObject {
   @override
   void update(double t) {
     super.update(t);
-    if (grounded) {
+    if (grounded()) {
       jumped = 0;
     }
     if (running != null) {

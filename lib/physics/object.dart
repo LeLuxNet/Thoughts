@@ -1,7 +1,7 @@
 import 'package:thoughts/physics/vector2.dart';
-import 'package:thoughts/world/block.dart';
+import 'package:thoughts/world/block/block.dart';
 import 'package:thoughts/world/location.dart';
-import 'package:thoughts/world/world.dart';
+import 'package:thoughts/world/block/world.dart';
 
 class GravitySide {
   static const top = GravitySide(1);
@@ -19,8 +19,8 @@ class PhysicsObject {
   Vector2 velocity = Vector2(0, 0);
   Location loc;
 
-  int height;
-  int width;
+  double height;
+  double width;
 
   bool grounded = false;
 
@@ -31,7 +31,10 @@ class PhysicsObject {
 
   static const MOVEMENT_STEP = 0.01;
 
-  PhysicsObject(this.height, this.width, this.loc, this.gravitySide) {
+  PhysicsObject(double height, double width, this.loc, this.gravitySide) {
+    this.height = height - MOVEMENT_STEP;
+    this.width = width - MOVEMENT_STEP;
+
     World.instance.physicsObjects.add(this);
   }
 
@@ -94,7 +97,10 @@ class PhysicsObject {
   }
 
   void _move(double t) {
-    grounded = false;
+    if(velocity.y != 0) {
+      grounded = false;
+    }
+
     var oldLoc = loc;
 
     var velX = velocity.x * t;

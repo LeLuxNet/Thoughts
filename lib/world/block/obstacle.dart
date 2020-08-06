@@ -1,10 +1,9 @@
 import 'package:thoughts/graphic/colors.dart';
 import 'package:thoughts/graphic/renderable.dart';
 import 'package:thoughts/graphic/shapes/rectangle.dart';
-import 'package:thoughts/graphic/shapes/triangle.dart';
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/player.dart';
-import 'package:thoughts/world/block.dart';
+import 'package:thoughts/world/block/block.dart';
 
 class Obstacle extends Block {
   bool invert;

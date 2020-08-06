@@ -1,5 +1,5 @@
-import 'package:thoughts/world/block.dart';
-import 'package:thoughts/world/obstacle.dart';
+import 'package:thoughts/world/block/block.dart';
+import 'package:thoughts/world/block/obstacle.dart';
 
 class Chunk {
   static const BLOCKS_PER_CHUNK = 25;

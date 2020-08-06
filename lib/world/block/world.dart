@@ -1,9 +1,9 @@
 import 'package:thoughts/physics/object.dart';
-import 'package:thoughts/world/block.dart';
-import 'package:thoughts/world/checkpoint.dart';
+import 'package:thoughts/world/block/block.dart';
+import 'package:thoughts/world/block/checkpoint.dart';
+import 'package:thoughts/world/block/obstacle.dart';
 import 'package:thoughts/world/chunk.dart';
 import 'package:thoughts/world/map.dart';
-import 'package:thoughts/world/obstacle.dart';
 
 class World {
   static const CHUNKS_X = 10;

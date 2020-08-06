@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:thoughts/graphic/colors.dart';
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/world/location.dart';
 
@@ -7,6 +10,8 @@ class Player extends PhysicsObject {
   static const double WALK_VELOCITY = 5;
   static const double JUMP_VELOCITY = 5.5;
 
+  final random = Random();
+
   int jumped = 0;
   Direction running;
 
@@ -14,10 +19,14 @@ class Player extends PhysicsObject {
   Location checkpointLoc;
   GravitySide checkpointSide;
 
+  Colors bodyColor;
+
   Player(Location loc, GravitySide gravitySide)
       : super(2, 1, loc, gravitySide) {
     checkpointLoc = loc.clone();
     checkpointSide = gravitySide;
+
+    switchBodyColor();
   }
 
   @override
@@ -68,5 +77,14 @@ class Player extends PhysicsObject {
 
     loc = checkpointLoc.clone();
     gravitySide = checkpointSide;
+
+    switchBodyColor();
+  }
+
+  void switchBodyColor() {
+    var oldColor = bodyColor;
+    while (oldColor == bodyColor) {
+      bodyColor = Colors.PLAYER_BODY[random.nextInt(Colors.PLAYER_BODY.length)];
+    }
   }
 }

@@ -11,12 +11,11 @@ import 'package:flutter/widgets.dart';
 import 'package:thoughts/graphic/colors.dart';
 import 'package:thoughts/graphic/objects/background.dart';
 import 'package:thoughts/graphic/objects/debug_overlay.dart';
-import 'package:thoughts/graphic/shapes/rectangle.dart';
 import 'package:thoughts/graphic/shapes/triangle.dart';
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/player.dart';
+import 'package:thoughts/world/block/world.dart';
 import 'package:thoughts/world/location.dart';
-import 'package:thoughts/world/world.dart';
 
 import 'graphic/colors.dart';
 import 'graphic/shapes/circle.dart';
@@ -92,7 +91,7 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
         var block = world.getBlock(x, y);
         if (block != null) {
           block
-              .draw(blockSize)
+              .draw(blockSize + 1)
               .renderCentered(c, Position(_canvasX(x), _canvasY(y)));
         }
       }
@@ -101,7 +100,7 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
     // Player
     var headOffset = player.gravitySide.forceMult * blockSize / 2;
     playerCircle.renderCentered(c, Position(center.x, center.y + headOffset));
-    Triangle(blockSize, blockSize, Colors.WHITE,
+    Triangle(blockSize, blockSize, player.bodyColor,
             invert: player.gravitySide == GravitySide.top)
         .renderCentered(c, Position(center.x, center.y - headOffset));
 
@@ -147,7 +146,7 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
 
     hitIndicator.resize(viewport);
 
-    playerCircle = Circle(blockSize, Colors.WHITE);
+    playerCircle = Circle(blockSize, Colors.PLAYER_HEAD);
     heart = Triangle.eq(blockSize / 2, Colors.RED, invert: true);
   }
 

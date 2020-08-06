@@ -1,5 +1,6 @@
 import 'package:thoughts/graphic/colors.dart';
 import 'package:thoughts/graphic/renderable.dart';
+import 'package:thoughts/graphic/shapes/rectangle.dart';
 import 'package:thoughts/graphic/shapes/triangle.dart';
 import 'package:thoughts/physics/object.dart';
 import 'package:thoughts/player.dart';
@@ -13,15 +14,14 @@ class Obstacle extends Block {
   }
 
   Renderable draw(double size) {
-    return Triangle(size, size, Colors.RED, invert: this.invert);
+    // return Triangle(size, size, Colors.RED, invert: this.invert);
+    return Rectangle.square(size, Colors.RED);
   }
 
   @override
-  bool collide(PhysicsObject object) {
+  void collide(PhysicsObject object) {
     if (object is Player) {
       object.damage();
-      return true;
     }
-    return false;
   }
 }

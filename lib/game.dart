@@ -7,7 +7,9 @@ import 'package:flame/keyboard.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:thoughts/graphic/colors.dart';
+import 'package:thoughts/graphic/objects/background.dart';
 import 'package:thoughts/graphic/objects/debug_overlay.dart';
 import 'package:thoughts/graphic/shapes/rectangle.dart';
 import 'package:thoughts/graphic/shapes/triangle.dart';
@@ -18,7 +20,6 @@ import 'package:thoughts/world/world.dart';
 
 import 'graphic/colors.dart';
 import 'graphic/shapes/circle.dart';
-import 'graphic/shapes/rectangle.dart';
 
 class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   static const MAX_BLOCK_PILE = 6;
@@ -31,15 +32,18 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   double blockSize;
   Position center;
 
-  Rectangle background;
   Circle playerCircle;
   Triangle heart;
+
+  Background hitIndicator;
 
   DebugOverlay debugOverlay = DebugOverlay();
 
   TheGame(screenDimensions) {
     world = World();
-    player = Player(Location(1.5, 2), GravitySide.bottom);
+    player = Player(Location(1.5, 12), GravitySide.bottom);
+
+    hitIndicator = Background(Paint()..color = Color(0x00000000));
 
     resize(screenDimensions);
 
@@ -54,9 +58,9 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
       () => player.loc,
       () => player.velocity,
       () => player.checkpointLoc,
-      () => player.touchingX.join(", "),
+      () => player.touchingX.join(", ") + " / " + player.touchingY.join(", "),
       () => player.jumped,
-      () => player.grounded(),
+      () => player.grounded,
       () => player.gravitySide == GravitySide.top ? "top" : "bottom",
       () => player.hearts
     ]);
@@ -64,9 +68,6 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
 
   @override
   void render(Canvas c) {
-    // Background
-    background.render(c, Position(0, 0));
-
     // World
     int minX = player.loc.x.toInt();
     int maxX = player.loc.x.toInt();
@@ -91,7 +92,7 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
         var block = world.getBlock(x, y);
         if (block != null) {
           block
-              .draw(blockSize + 1)
+              .draw(blockSize)
               .renderCentered(c, Position(_canvasX(x), _canvasY(y)));
         }
       }
@@ -104,10 +105,20 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
             invert: player.gravitySide == GravitySide.top)
         .renderCentered(c, Position(center.x, center.y - headOffset));
 
+    /*
+    for (var y in player.touchingY) {
+      for (var x in player.touchingX) {
+        Rectangle.square(blockSize + 1, Colors(0x990000ff))
+            .renderCentered(c, Position(_canvasX(x), _canvasY(y)));
+      }
+    }
+    */
+
     // GameOverlay
     for (var h = 1; h <= player.hearts; h++) {
       heart.render(c, Position(viewport.width - h * heart.width, 0));
     }
+    hitIndicator.render(c);
 
     // DebugOverlay
     debugOverlay.render(c);
@@ -134,7 +145,8 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
         max(viewport.width / MAX_BLOCK_ROW, viewport.height / MAX_BLOCK_PILE);
     center = Position(viewport.width / 2, viewport.height / 2);
 
-    background = Rectangle(viewport.height, viewport.width, Colors.BLACK);
+    hitIndicator.resize(viewport);
+
     playerCircle = Circle(blockSize, Colors.WHITE);
     heart = Triangle.eq(blockSize / 2, Colors.RED, invert: true);
   }
@@ -172,5 +184,10 @@ class TheGame extends BaseGame with TapDetector, KeyboardEvents {
   @override
   bool recordFps() {
     return true;
+  }
+
+  @override
+  Color backgroundColor() {
+    return Colors.BLACK.color;
   }
 }

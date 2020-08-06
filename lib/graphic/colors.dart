@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
-
 class Colors {
   static final WHITE = Colors(0xffffffff);
   static final BLACK = Colors(0xff000000);

@@ -1,9 +1,9 @@
 import 'package:thoughts/physics/object.dart';
+import 'package:thoughts/world/block.dart';
+import 'package:thoughts/world/checkpoint.dart';
 import 'package:thoughts/world/chunk.dart';
 import 'package:thoughts/world/map.dart';
 import 'package:thoughts/world/obstacle.dart';
-
-import 'block.dart';
 
 class World {
   static const CHUNKS_X = 10;
@@ -44,6 +44,8 @@ class World {
       return Obstacle(x, y, false);
     } else if (id == 3) {
       return Obstacle(x, y, true);
+    } else if (id == 4) {
+      return Checkpoint(x, y);
     }
     return null;
   }

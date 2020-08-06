@@ -5,6 +5,7 @@ enum Direction { left, right }
 
 class Player extends PhysicsObject {
   static const double WALK_VELOCITY = 5;
+  static const double JUMP_VELOCITY = 5.5;
 
   int jumped = 0;
   Direction running;
@@ -15,17 +16,15 @@ class Player extends PhysicsObject {
 
   Player(Location loc, GravitySide gravitySide)
       : super(2, 1, loc, gravitySide) {
-    checkpointLoc = loc;
+    checkpointLoc = loc.clone();
     checkpointSide = gravitySide;
   }
 
   @override
   void update(double t) {
     super.update(t);
-    if (grounded()) {
+    if (grounded) {
       jumped = 0;
-      checkpointLoc = loc.clone();
-      checkpointSide = gravitySide;
     }
     if (running != null) {
       velocity.x = running == Direction.right ? WALK_VELOCITY : -WALK_VELOCITY;
@@ -37,7 +36,7 @@ class Player extends PhysicsObject {
       return;
     }
     if (jumped == 0) {
-      velocity.y -= 5.0 * gravitySide.forceMult;
+      velocity.y -= JUMP_VELOCITY * gravitySide.forceMult;
     } else if (jumped == 1) {
       toggleGravity();
     }
@@ -67,7 +66,7 @@ class Player extends PhysicsObject {
     velocity.x = 0;
     velocity.y = 0;
 
-    loc = checkpointLoc;
+    loc = checkpointLoc.clone();
     gravitySide = checkpointSide;
   }
 }

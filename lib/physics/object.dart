@@ -22,9 +22,14 @@ class PhysicsObject {
   int height;
   int width;
 
+  bool grounded = false;
+
   static const GRAVITY = 10;
 
+  static const AIR_FRICTION = 0.95;
   static const GROUND_FRICTION = 0.6;
+
+  static const MOVEMENT_STEP = 0.01;
 
   PhysicsObject(this.height, this.width, this.loc, this.gravitySide) {
     World.instance.physicsObjects.add(this);
@@ -38,6 +43,14 @@ class PhysicsObject {
     return loc.y - height / 2;
   }
 
+  double get leftX {
+    return loc.x - width / 2;
+  }
+
+  double get rightX {
+    return loc.x + width / 2;
+  }
+
   double get frontY {
     return loc.y + gravitySide.forceMult * height / 2;
   }
@@ -48,7 +61,15 @@ class PhysicsObject {
 
   List<int> get touchingX {
     List<int> touching = [];
-    for (var i = loc.x.floor(); i <= loc.x.ceil(); i++) {
+    for (var i = leftX.round(); i <= rightX.round(); i++) {
+      touching.add(i);
+    }
+    return touching;
+  }
+
+  List<int> get touchingY {
+    List<int> touching = [];
+    for (var i = bottomY.round(); i <= topY.round(); i++) {
       touching.add(i);
     }
     return touching;
@@ -59,9 +80,10 @@ class PhysicsObject {
 
     Vector2 delta = Vector2(0, 0);
 
-    if (grounded()) {
+    if (grounded) {
       velocity.x *= GROUND_FRICTION;
     } else {
+      velocity.x *= AIR_FRICTION;
       if (gravitySide != null) {
         delta.y += GRAVITY * gravitySide.forceMult * t;
       }
@@ -72,59 +94,76 @@ class PhysicsObject {
   }
 
   void _move(double t) {
+    grounded = false;
+    var oldLoc = loc;
+
     var velX = velocity.x * t;
     var velY = velocity.y * t;
 
-    loc.x += velX;
-    loc.y = _collisionY(velY, velY > 0 ? 1 : -1);
+    while (velX != 0 || velY != 0) {
+      var dirX = velX > 0 ? 1 : -1;
+      var dirY = velY > 0 ? 1 : -1;
+
+      var oldX = loc.x;
+      if (velX * dirX > MOVEMENT_STEP) {
+        loc.x += MOVEMENT_STEP * dirX;
+        velX -= MOVEMENT_STEP * dirX;
+      } else {
+        loc.x += velX;
+        velX = 0;
+      }
+      var block = firstCollision();
+      if (!identical(oldLoc, loc)) {
+        return;
+      }
+      if (block != null) {
+        velX = 0;
+        loc.x = oldX;
+        velocity.x = 0;
+      }
+
+      var oldY = loc.y;
+      if (velY * dirY > MOVEMENT_STEP) {
+        loc.y += MOVEMENT_STEP * dirY;
+        velY -= MOVEMENT_STEP * dirY;
+      } else {
+        loc.y += velY;
+        velY = 0;
+      }
+      block = firstCollision();
+      if (!identical(oldLoc, loc)) {
+        return;
+      }
+      if (block != null) {
+        velY = 0;
+        loc.y = oldY;
+        velocity.y = 0;
+        if (gravitySide.forceMult == dirY) {
+          grounded = true;
+        }
+      }
+    }
   }
 
-  double _collisionY(double delta, int direction) {
-    var nextD = loc.y + direction * (height / 2 + 0.5);
-    int next = delta > 0 ? nextD.floor() : nextD.ceil();
-    var to = next + delta;
-    for (int cord = next;
-        delta > 0 ? cord <= to : cord >= to;
-        cord += direction) {
-      Block unsolidBlock;
+  bool collidingWith(Block block) {
+    return block.y - 0.5 <= topY &&
+        block.y + 0.5 >= bottomY &&
+        block.x + 0.5 >= leftX &&
+        block.x - 0.5 <= rightX;
+  }
+
+  Block firstCollision() {
+    for (var y in touchingY) {
       for (var x in touchingX) {
-        var block = World.instance.getBlock(x, cord);
+        var block = World.instance.getBlock(x, y);
         if (block != null) {
+          block.collide(this);
           if (block.solid) {
-            block.collide(this);
-            collided(block, Axis.y);
-            return cord - direction * (height / 2 + 0.5);
-          } else {
-            unsolidBlock = block;
+            return block;
           }
         }
       }
-      if (unsolidBlock != null) {
-        unsolidBlock.collide(this);
-        return loc.y;
-      }
     }
-    return loc.y + delta;
-  }
-
-  void collided(Block block, Axis axis) {
-    if (axis == Axis.y) {
-      velocity.y = 0;
-    } else {
-      velocity.x = 0;
-    }
-  }
-
-  bool grounded() {
-    if (nextY != frontY + gravitySide.forceMult * 0.5) {
-      return false;
-    }
-    for (var x in touchingX) {
-      var block = World.instance.getBlock(x, nextY);
-      if (block != null && block.solid) {
-        return true;
-      }
-    }
-    return false;
+    return null;
   }
 }

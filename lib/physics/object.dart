@@ -58,8 +58,8 @@ class PhysicsObject {
 
   int get nextY {
     return (frontY + gravitySide.forceMult * 0.5).round();
-  }
 
+  }
   List<int> get touchingX {
     List<int> touching = [];
     for (var i = leftX.round(); i <= rightX.round(); i++) {

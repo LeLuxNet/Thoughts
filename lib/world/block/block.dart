@@ -2,6 +2,7 @@ import 'package:thoughts/graphic/colors.dart';
 import 'package:thoughts/graphic/renderable.dart';
 import 'package:thoughts/graphic/shapes/rectangle.dart';
 import 'package:thoughts/physics/object.dart';
+import 'package:thoughts/world/location.dart';
 
 class Block {
   int x;

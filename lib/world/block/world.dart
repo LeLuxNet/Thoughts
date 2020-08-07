@@ -66,7 +66,7 @@ class World {
     var chunkX = x ~/ Chunk.BLOCKS_PER_CHUNK;
     var chunkY = y ~/ Chunk.BLOCKS_PER_CHUNK;
 
-    if (chunks.length < chunkX && chunks[chunkX].length < chunkY) {
+    if (chunks.length <= chunkX || chunks[chunkX].length <= chunkY) {
       return null;
     }
     return chunks[chunkX][chunkY];

@@ -41,7 +41,7 @@ class Obstacle extends Block {
     sideX = 1 - sideX;
 
     print(sideX);
-    assert(sideX >= 0 && sideX <= 1);
+    // assert(sideX >= 0 && sideX <= 1);
 
     return object.gravitySide == GravitySide.bottom
         ? y + sideX > object.frontY
